@@ -1,0 +1,757 @@
+/* Custom styles for Advantech Home 3 */
+
+:root {
+    --primary-color: #FC5220;
+    --secondary-color: #121c22;
+    --body-color: #4a5257;
+    --font-family: 'Plus Jakarta Sans', sans-serif;
+    --bs-primary: #FC5220;
+    --bs-primary-rgb: 252, 82, 32;
+}
+
+body {
+    font-family: var(--font-family);
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    color: var(--body-color);
+    font-weight: 500;
+    line-height: 1.7;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+}
+
+html {
+    overflow-x: hidden;
+}
+
+html, body {
+    overflow-x: hidden;
+    margin: 0;
+    padding: 0;
+}
+
+/* Hide scrollbars */
+::-webkit-scrollbar {
+    display: none;
+}
+
+* {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.header-style2.fixedHeader {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 999;
+    border-bottom: 0.5px solid rgba(255,255,255,0.1) !important;
+    transition: none;
+    transform: translateY(40px);
+    box-shadow: none;
+}
+
+.header-style2.fixedHeader.adjusted {
+    transform: translateY(0);
+}
+
+.navbar-default {
+    background-color: #fff;
+    padding: 10px 0;
+}
+
+.transparent-header .navbar-default {
+    background: linear-gradient(to right, rgba(255,255,255,0.9) 0%, rgba(255,255,255,0.9) 10%, transparent 30%, transparent 70%, rgba(255,255,255,0.9) 100%, rgba(255,255,255,0.9) -20%);
+    transition: background 0.3s ease;
+}
+
+.transparent-header .navbar-nav .nav-link {
+    color: #fff !important;
+    transition: color 0.3s ease;
+}
+
+.transparent-header.scrolled .navbar-default {
+    background: #fff;
+}
+
+.transparent-header.scrolled .navbar-nav .nav-link {
+    color: #000 !important;
+}
+
+.navbar-nav .nav-link {
+    color: #000;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.attr-nav ul li {
+    display: inline-block;
+    margin-left: 15px;
+}
+
+/* Hero Section */
+.advantech-hero {
+    color: white;
+    position: relative;
+    overflow: hidden;
+    min-height: 90vh;
+    padding-top: 110px;
+}
+
+.full-height-hero {
+    min-height: 120vh;
+}
+
+.hero-background-video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 90vh;
+    z-index: -1;
+    transform: scale(1);
+    transform-origin: center;
+    object-fit: cover;
+}
+
+.hero-background-image {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 90vh;
+    z-index: -1;
+    object-fit: cover;
+}
+
+.full-height-hero .hero-background-video {
+    height: 120vh;
+}
+
+.full-height-hero .hero-background-image {
+    height: 120vh;
+}
+
+
+
+.advantech-hero .container {
+    position: relative;
+    z-index: 2;
+}
+
+.letter-spacing-4 {
+    letter-spacing: 0.5rem;
+}
+
+.opacity-75 {
+    opacity: 0.75;
+}
+
+/* About Section */
+.about-section img {
+    max-width: 100%;
+    height: auto;
+}
+
+/* Services Section */
+.services-section .card {
+    transition: transform 0.3s;
+}
+
+.services-section .card:hover {
+    transform: translateY(-5px);
+}
+
+/* Portfolio Section */
+.portfolio-section .card img {
+    transition: transform 0.3s;
+}
+
+.portfolio-section .card:hover img {
+    transform: scale(1.05);
+}
+
+/* Testimonials Section */
+.testimonials-section .card {
+    border: none;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* Blog Section */
+.blog-section .card img {
+    height: 200px;
+    object-fit: cover;
+}
+
+/* Footer */
+.footer {
+    background-color: var(--secondary-color);
+    color: white;
+}
+
+.footer a {
+    color: #adb5bd;
+    text-decoration: none;
+}
+
+.footer a:hover {
+    color: white;
+}
+
+/* New Footer Styles */
+.opacity7 {
+    opacity: 1;
+}
+
+.border-color-light-white {
+    border-color: rgba(255, 255, 255, 0.2) !important;
+}
+
+.text-primary-hover:hover {
+    color: var(--primary-color) !important;
+}
+
+.social-icon-style4 li {
+    display: inline-block;
+    margin-right: 10px;
+}
+
+.social-icon-style4 li a {
+    color: white;
+    font-size: 18px;
+    transition: color 0.3s;
+}
+
+.social-icon-style4 li a:hover {
+    color: var(--primary-color);
+}
+
+.footer-logo img {
+    max-width: 250px;
+    height: auto;
+    margin-top: -100px;
+}
+
+.newsletter-form .form-control {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.newsletter-form .form-control::placeholder {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.btn-white {
+    background: white;
+    color: var(--secondary-color);
+    border: none;
+}
+
+.btn-white:hover {
+    background: var(--primary-color);
+    color: white;
+}
+
+/* Footer alignment fixes */
+.footer-logo {
+    text-align: center;
+}
+
+.footer-logo img {
+    max-height: 100px;
+}
+
+footer {
+    background-color: white !important;
+    color: black !important;
+}
+
+footer a {
+    color: black !important;
+}
+
+footer .text-primary {
+    color: black !important;
+}
+
+footer .border-color-light-white {
+    border-color: rgba(0, 0, 0, 0.2) !important;
+}
+
+footer .text-white {
+    color: black !important;
+}
+
+.newsletter-form {
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.quform-submit-inner {
+    text-align: center;
+    margin-top: 10px;
+}
+
+.display-29 { font-size: 0.9rem; }
+.display-28 { font-size: 0.95rem; }
+.display-27 { font-size: 1rem; }
+.display-26 { font-size: 1.05rem; }
+.display-25 { font-size: 1.1rem; }
+.display-24 { font-size: 1.15rem; }
+.display-30 { font-size: 0.85rem; }
+
+.pt-2-6 { padding-top: 2.6rem; }
+.pt-sm-6 { padding-top: 3rem; }
+.pt-xxl-8 { padding-top: 5rem; }
+
+.mb-2-6 { margin-bottom: 2.6rem; }
+.mb-sm-6 { margin-bottom: 3rem; }
+.mb-xxl-8 { margin-bottom: 5rem; }
+
+.mt-n1-9 { margin-top: -1.9rem; }
+.mb-1-9 { margin-bottom: 1.9rem; }
+.mt-1-9 { margin-top: 1.9rem; }
+
+.pb-2-2 { padding-bottom: 2.2rem; }
+.pb-lg-6 { padding-bottom: 3rem; }
+.pb-xxl-8 { padding-bottom: 5rem; }
+
+.pb-1-9 { padding-bottom: 1.9rem; }
+
+.ps-sm-6 { padding-left: 3rem; }
+.ps-xl-1-9 { padding-left: 1.9rem; }
+.ps-xxl-2-9 { padding-left: 2.9rem; }
+
+.ps-lg-6 { padding-left: 3rem; }
+
+/* Buttons */
+.btn-primary {
+    background: var(--primary-color);
+    border: none;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(252, 82, 32, 0.3);
+    transition: all 0.4s ease-in-out 0s;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 24px;
+    padding: 13px 32px !important;
+    text-transform: uppercase;
+}
+
+.btn-primary:hover {
+    background: linear-gradient(45deg, #e33a1a, #ff8c69);
+    box-shadow: 0 6px 20px rgba(252, 82, 32, 0.4);
+    transform: translateY(-2px);
+}
+
+/* About Section */
+.about-img-text {
+    position: absolute;
+    top: 50px;
+    left: 53px;
+    background: transparent;
+    padding: 15px;
+    box-shadow: 0 px px rgba(0,0,0,0.1);
+    border-radius: 5px;
+    animation: TopBottom 8s infinite ease-in-out;
+    color: #000000;
+    font-weight: 1000;
+    font-size: 34px;
+}
+
+.about-img-text span {
+    font-size: 18px;
+}
+
+.about-img-text p {
+    font-size: 86px;
+    margin: -40px;
+}
+
+@keyframes TopBottom {
+    0% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(20px);
+    }
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.about-img-one {
+    position: absolute;
+    top: 210px;
+    left: -23px;
+}
+
+.ani-top-bottom {
+    animation: TopBottom 5s infinite ease-in-out;
+}
+
+.product-item {
+    background-color: white;
+    border: 2px solid var(--primary-color);
+    border-radius: 15px;
+    padding: 25px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(252, 82, 32, 0.1);
+    transition: all 0.3s ease;
+}
+
+.product-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(252, 82, 32, 0.2);
+    border-color: var(--secondary-color);
+}
+
+.product-item h5 {
+    color: var(--secondary-color);
+    font-weight: 600;
+    margin: 0;
+}
+
+.industry-item {
+    background-color: white;
+    border: 2px solid var(--primary-color);
+    border-radius: 15px;
+    padding: 25px 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 4px 15px rgba(252, 82, 32, 0.1);
+    transition: all 0.3s ease;
+}
+
+.industry-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(252, 82, 32, 0.2);
+    border-color: var(--secondary-color);
+}
+
+.industry-item h5 {
+    color: var(--secondary-color);
+    font-weight: 600;
+    margin: 0;
+}
+
+/* Logos Slider */
+.logos-slider {
+    overflow: hidden;
+    padding: 40px 0;
+    width: 100vw;
+    margin-left: calc(-50vw + 50%);
+}
+
+.logos-container {
+    display: flex;
+    animation: slideLogos 15s linear infinite;
+}
+
+.logo-item {
+    flex: 0 0 auto;
+    width: 250px;
+    margin: 0 30px;
+    text-align: center;
+}
+
+.logo-item img {
+    width: 250px;
+    height: 120px;
+    object-fit: contain;
+}
+
+@keyframes slideLogos {
+    0% {
+        transform: translateX(0);
+    }
+    100% {
+        transform: translateX(-50%);
+    }
+}
+
+.top-bar {
+    background-color: var(--primary-color);
+    padding: 7px 0;
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+.top-bar.hide {
+    transform: translateY(-100%);
+}
+
+.top-bar-info ul,
+.top-social-icon {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+
+.top-bar-info li {
+    display: inline-block;
+    margin-right: 20px;
+    color: white;
+    font-size: 14px;
+}
+
+.top-bar-info li i {
+    margin-right: 5px;
+}
+
+.top-social-icon {
+    display: flex;
+    justify-content: flex-end;
+}
+
+.top-social-icon li {
+    margin-left: 10px;
+}
+
+.top-social-icon a {
+    color: white;
+    font-size: 16px;
+    transition: color 0.3s;
+}
+
+.top-social-icon a:hover {
+    color: var(--secondary-color);
+}
+
+.about-img-one img {
+    border-radius: 5px;
+}
+
+.about-content-wrapper {
+    max-width: 600px;
+}
+
+.about-main-title {
+    color: #000000;
+    letter-spacing: -0.02em;
+    line-height: 1.2;
+    font-size: calc(1.425rem + 2.1vw);
+    margin-bottom: 0 !important;
+    font-weight: 800;
+}
+
+.about-cta-btn {
+    margin-right: 1.5rem !important;
+    cursor: pointer;
+    display: inline-block;
+    position: relative;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 24px;
+    padding: 13px 32px !important;
+    border-radius: 0.25rem;
+    z-index: 1;
+    text-transform: uppercase;
+    transition: all 0.4s ease-in-out 0s;
+    color: white;
+    text-decoration: none;
+    background: var(--primary-color);
+}
+
+/* Services Section */
+.advantech-card {
+    border: none;
+    background-color: #f8f9fa;
+    padding: 30px 30px 30px 30px;
+    border-radius: 15px;
+    position: relative;
+    transition: all 0.3s ease-out 0s;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+.advantech-card:hover {
+    transform: translateY(-10px) rotate(1deg);
+    box-shadow: 0 20px 40px rgba(252, 82, 32, 0.3);
+}
+
+.advantech-card-icon {
+    position: relative;
+    margin-bottom: 20px;
+}
+
+.advantech-hover-icon {
+    position: absolute;
+    top: 0;
+    left: 0;
+    opacity: 0;
+    transition: opacity 0.3s;
+}
+
+.advantech-card:hover .advantech-hover-icon {
+    opacity: 1;
+}
+
+
+.advantech-card-btn {
+    margin-top: 15px;
+}
+
+.advantech-card-btn a {
+    color: var(--primary-color);
+    font-size: 20px;
+    transition: color 0.3s;
+}
+
+.advantech-card-btn a:hover {
+    color: var(--secondary-color);
+}
+
+.slide-left,
+.slide-right {
+    opacity: 1;
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+    transform: translateZ(0);
+}
+
+.slide-left {
+    transform: translateX(-100%) translateZ(0);
+}
+
+.slide-right {
+    transform: translateX(100%) translateZ(0);
+}
+
+.capabilities-grid {
+    margin-top: 10px;
+}
+
+/* Utility classes */
+.w-50px {
+    width: 50px;
+}
+
+.w-sm-70 {
+    width: 70% !important;
+}
+
+.w-md-60 {
+    width: 60% !important;
+}
+
+.w-lg-50 {
+    width: 50% !important;
+}
+
+.w-xl-40 {
+    width: 40% !important;
+}
+
+.title-sm {
+    color: var(--primary-color);
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .hero-section {
+        min-height: 50vh;
+    }
+    .attr-nav ul li {
+        margin-left: 10px;
+    }
+}
+
+/* Copyright positioning */
+.copyright-position {
+    position: absolute;
+    width: 60%;
+    gap: 0px;
+    top: 260px ;
+    left: 550px;
+}
+
+/* Mobile responsive footer alignment */
+@media (max-width: 768px) {
+    .copyright-position {
+        position: relative;
+        top: auto;
+        left: auto;
+        width: 100%;
+    }
+
+    .footer-logo img {
+        max-width: 200px;
+    }
+
+    /* Center hero buttons in mobile */
+    .advantech-hero .btn {
+        display: block;
+        margin: 10px auto;
+        width: auto;
+    }
+}
+
+/* White navbar toggler icon */
+.navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='white' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='m4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+}
+
+/* Hero overlay */
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.60);
+    z-index: 1;
+}
+
+/* Counter flip animation */
+.counter.flip {
+    animation: flipNumber 0.5s ease-in-out;
+}
+
+@keyframes flipNumber {
+    0% { transform: rotateY(0deg); }
+    50% { transform: rotateY(90deg); }
+    100% { transform: rotateY(0deg); }
+}
+
+/* Product Carousel Highlight */
+.highlight {
+    transform: scale(1.05);
+    border: 2px solid var(--primary-color);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+#productCarousel .card {
+    transition: all 0.5s ease;
+    max-width: 350px;
+    height: 550px;
+}
+
+/* Footer styling */
+footer h2 {
+    color: var(--primary-color) !important;
+    font-weight: bold !important;
+}
+
+/* Footer content row padding reduction */
+.footer-content-row {
+    padding-bottom: calc(2.2rem - 20px) !important;
+}
+
+@media (min-width: 992px) {
+    .footer-content-row {
+        padding-bottom: calc(3rem - 20px) !important;
+    }
+}
+
+@media (min-width: 1400px) {
+    .footer-content-row {
+        padding-bottom: calc(5rem - 20px) !important;
+    }
+}
