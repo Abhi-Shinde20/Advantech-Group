@@ -24,7 +24,7 @@
                     <div class="text-center">
                         <h1 class="display-4 fw-bold mb-4">Engineering Excellence</h1>
                         <p class="lead mb-4">IATF 16949 certified manufacturer of HPDC and precision-machined automotive components trusted by leading OEMs.</p>
-                        <a href="#contact" class="btn btn-primary me-3">Request a Quote</a>
+                        <a href="#" class="btn btn-primary me-3" onclick="openQuoteModal()">Request a Quote</a>
                         <a href="#capabilities" class="btn btn-outline-light">Explore Capabilities</a>
                     </div>
                 </div>
@@ -41,7 +41,7 @@
                         <div class="mb-3">
                             <h2 class="display-5 fw-bold mb-3 about-main-title">25+ Years of<br>Engineering Excellence</h2>
                         </div>
-                        <p class="mb-3 display-29 text-start">About Advantech Engineering<br>Leading manufacturer of HPDC and precision-machined automotive components since 1999.</p>
+                        <p class="mb-3 display-29 text-start">Leading manufacturer of HPDC and precision-machined <br> automotive components since 1999.</p>
                         <div class="d-flex align-items-center">
                             <a href="about.html" class="btn btn-primary about-cta-btn">Know More About Us</a>
                         </div>
@@ -79,7 +79,7 @@
                         </div>
                         <div class="text-center">
                         <h3 class="mb-4 h5 fw-bold">High Pressure Die Casting</h3>
-                        <p>Advanced 180T–280T machines with automated ladle, sprayer & N₂ degassing.</p>
+                        <p>Advanced 3 → 180TON , 3 → 280TON , 1 → 300TON machines with automated ladle, sprayer & N₂ degassing.</p>
                         </div>
                     </div>
                 </div>
@@ -90,7 +90,7 @@
                                                 </div>
                         <div class="text-center">
                         <h3 class="mb-4 h5 fw-bold">Precision <br> Machining</h3>
-                        <p>30+ VMCs, 15+ CNC turning centers for high-accuracy machining.</p>
+                        <p>20+ SPMs, 70+ GPMs , 15+ CNCs turning centers for high-accuracy machining.</p>
                         </div>
                     </div>
                 </div>
@@ -112,7 +112,7 @@
                         </div>
                         <div class="text-center">
                         <h3 class="mb-4 h5 fw-bold">End-to-End Manufacturing</h3>
-                        <p>Casting → Machining → Finishing → Assembly → Inspection.</p>
+                        <p>Casting → Machining → Powder Coating → Finishing → Assembly → Inspection.</p>
                         </div>
                     </div>
                 </div>
@@ -139,17 +139,17 @@
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="product-item text-center">
-                        <h5>Wiping System Components</h5>
+                        <h5>3&4 Wheeler Wiping Components</h5>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="product-item text-center">
-                        <h5>Alternator Covers</h5>
+                        <h5>All Types Of Alternative Covers</h5>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
                     <div class="product-item text-center">
-                        <h5>Clutch Housing</h5>
+                        <h5>2&3 Wheeler Clutch Parts</h5>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4">
@@ -164,7 +164,8 @@
         </div>
     </section>
 
-    <!-- Industries We Serve -->
+    <!-- Industries We Serve - COMMENTED OUT -->
+    <!--
     <section id="industries" class="py-5 section">
         <div class="container">
             <div class="text-center mb-5">
@@ -186,7 +187,7 @@
                 <div class="col-md-3 mb-4">
                     <div class="industry-item text-center">
                         <i class="fas fa-car fa-2x text-primary mb-3"></i>
-                        <h5>Passenger Vehicles</h5>
+                        <h5>Four-Vehicles</h5>
                     </div>
                 </div>
                 <div class="col-md-3 mb-4">
@@ -204,6 +205,7 @@
             </div>
         </div>
     </section>
+    -->
 
     <!-- Trusted By Leading OEMs -->
     <section id="trusted" class="py-5 bg-light section">
@@ -273,7 +275,7 @@
         <div class="container text-center">
             <h2>Looking for a Reliable Auto Component Manufacturing Partner?</h2>
             <p>Let's build precision together.</p>
-            <a href="contact.html" class="btn btn-light btn-lg">Request a Quote</a>
+            <a href="#" class="btn btn-light btn-lg" onclick="openQuoteModal()">Request a Quote</a>
         </div>
     </section>
 
@@ -385,6 +387,46 @@
             </div>
         </div>
     </footer>
+
+    <!-- Quote Request Modal -->
+    <div id="quoteModal" class="quote-modal">
+        <div class="quote-modal-content">
+            <div class="quote-modal-header">
+                <button class="quote-modal-close" onclick="closeQuoteModal()" aria-label="Close modal">
+                    <span style="font-family: Arial, sans-serif; font-weight: 300;">&times;</span>
+                </button>
+                <h2>Request a Quote</h2>
+                <p>Get a customized quote for your automotive component needs</p>
+            </div>
+            <div class="quote-modal-body">
+                <form id="quoteForm" onsubmit="submitQuote(event)">
+                    <div class="quote-form-group">
+                        <label for="quoteName">Name *</label>
+                        <input type="text" id="quoteName" name="name" class="quote-form-control" placeholder="Enter your full name" required>
+                    </div>
+                    <div class="quote-form-group">
+                        <label for="quoteMobile">Mobile *</label>
+                        <input type="tel" id="quoteMobile" name="mobile" class="quote-form-control" placeholder="Enter your mobile number" required>
+                    </div>
+                    <div class="quote-form-group">
+                        <label for="quoteEmail">Email *</label>
+                        <input type="email" id="quoteEmail" name="email" class="quote-form-control" placeholder="Enter your email address" required>
+                    </div>
+                    <div class="quote-form-group">
+                        <label for="quoteCompany">Company Name *</label>
+                        <input type="text" id="quoteCompany" name="company" class="quote-form-control" placeholder="Enter your company name" required>
+                    </div>
+                    <div class="quote-form-group">
+                        <label for="quoteRequirements">Requirements Details *</label>
+                        <textarea id="quoteRequirements" name="requirements" class="quote-form-control quote-textarea" placeholder="Please describe your requirements, specifications, quantity, and any other details..." required></textarea>
+                    </div>
+                    <button type="submit" class="quote-submit-btn">
+                        <i class="fas fa-paper-plane me-2"></i>Submit Quote Request
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
 
     <script src="js/script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
