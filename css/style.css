@@ -98,13 +98,11 @@ html, body {
     color: white;
     position: relative;
     overflow: hidden;
-    min-height: 800px;
     padding-top: 110px;
     height: 800px;
 }
 
 .full-height-hero {
-    min-height: 700px;
     height: 700px;
 }
 

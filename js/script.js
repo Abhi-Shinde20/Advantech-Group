@@ -222,6 +222,7 @@ function closeQuoteModal() {
     }
 }
 
+// Netlify Forms AJAX submission handler
 function submitQuote(event) {
     event.preventDefault();
     
@@ -261,35 +262,39 @@ function submitQuote(event) {
     submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
     submitBtn.disabled = true;
     
-    // Submit to backend API
-    submitToBackend('/api/quotes', formData)
-        .then(response => {
-            if (response.success) {
-                submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Quote Requested!';
-                submitBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
-                
-                setTimeout(() => {
-                    showAlert('Thank you for your quote request! We will contact you within 24 hours.', 'success');
-                    closeQuoteModal();
-                    
-                    // Reset button
-                    submitBtn.innerHTML = originalText;
-                    submitBtn.style.background = '';
-                    submitBtn.disabled = false;
-                }, 1500);
-            } else {
-                throw new Error(response.message || 'Submission failed');
-            }
-        })
-        .catch(error => {
-            console.error('Quote submission error:', error);
-            showAlert('Failed to submit quote request. Please try again or contact us directly.', 'error');
+    // Get the form element
+    const form = event.target;
+    const formDataNetlify = new FormData(form);
+    
+    // Submit via AJAX to Netlify
+    fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formDataNetlify).toString()
+    })
+    .then(() => {
+        // Success
+        submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Quote Requested!';
+        submitBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+        
+        setTimeout(() => {
+            showAlert('Thank you for your quote request! We will contact you within 24 hours.', 'success');
+            closeQuoteModal();
             
             // Reset button
             submitBtn.innerHTML = originalText;
             submitBtn.style.background = '';
             submitBtn.disabled = false;
-        });
+        }, 1500);
+    })
+    .catch((error) => {
+        // Error handling
+        showAlert('There was an error submitting your request. Please try again.', 'error');
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
 }
 
 // Helper function to submit data to backend
@@ -318,6 +323,44 @@ async function submitToBackend(endpoint, data) {
         console.error('API call failed:', error);
         throw error;
     }
+}
+
+// Netlify Forms AJAX handler for contact form
+function handleContactForm(event) {
+    event.preventDefault();
+    
+    const form = event.target;
+    const formData = new FormData(form);
+    
+    // Show loading state
+    const submitBtn = form.querySelector('button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Sending...';
+    submitBtn.disabled = true;
+    
+    // Submit via AJAX to Netlify
+    fetch("/", {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: new URLSearchParams(formData).toString()
+    })
+    .then(() => {
+        // Success
+        showAlert('Thank you for your message! We will get back to you soon.', 'success');
+        form.reset();
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    })
+    .catch((error) => {
+        // Error handling
+        showAlert('There was an error sending your message. Please try again.', 'error');
+        
+        // Reset button
+        submitBtn.innerHTML = originalText;
+        submitBtn.disabled = false;
+    });
 }
 
 // Helper function to show alerts
@@ -364,3 +407,46 @@ document.addEventListener('keydown', function(event) {
         closeQuoteModal();
     }
 });
+
+// Initialize form handlers when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    // Contact form handler
+    const contactForm = document.querySelector('form[name="contact"]');
+    if (contactForm) {
+        contactForm.addEventListener('submit', handleContactForm);
+    }
+});
+
+// Hero section height management
+function updateHeroHeight() {
+    const hero = document.querySelector('.advantech-hero');
+    const video = document.querySelector('.hero-background-video');
+    const overlay = document.querySelector('.hero-overlay');
+    const container = hero.querySelector('.container');
+    
+    if (!hero || !video || !overlay || !container) return;
+    
+    const viewportHeight = window.innerHeight;
+    const headerHeight = document.querySelector('.header-style2')?.offsetHeight || 0;
+    const topBarHeight = document.querySelector('.top-bar')?.offsetHeight || 0;
+    const headerTotalHeight = headerHeight + topBarHeight;
+    
+    // Calculate available height (viewport minus header space)
+    const availableHeight = viewportHeight - headerTotalHeight;
+    
+    // Set minimum height to prevent too small sections
+    const minHeight = Math.max(availableHeight, 500);
+    
+    // Apply height to hero section
+    hero.style.minHeight = minHeight + 'px';
+    video.style.minHeight = minHeight + 'px';
+    overlay.style.minHeight = minHeight + 'px';
+    
+    // Ensure container padding accounts for header
+    container.style.paddingTop = (headerTotalHeight + 20) + 'px';
+    container.style.paddingBottom = '50px';
+}
+
+// Initial call and resize listener
+updateHeroHeight();
+window.addEventListener('resize', updateHeroHeight);
