@@ -39,7 +39,44 @@ This guide will help you deploy the Advantech Engineering website to Netlify wit
 
 ## 🔧 Backend Deployment Options
 
-### Option 1: Heroku (Recommended for beginners)
+### Option 1: Netlify + Neon Database (Recommended)
+
+#### Set up Neon Database:
+1. **Install Neon Extension in Netlify:**
+   - Go to your Netlify site dashboard
+   - Navigate to "Extensions" in the sidebar
+   - Search for "Neon" and install it
+   - Create a new database or connect existing one
+   - Copy the connection string
+
+2. **Get Connection String:**
+   - In your Neon dashboard, go to your database
+   - Click on "Connection Details"
+   - Copy the "Connection String" (URI format)
+   - It will look like: `postgresql://username:password@ep-example-12345.us-east-1.aws.neon.tech/advantech?sslmode=require`
+
+3. **Update Backend Configuration:**
+   - Add the connection string to your backend environment variables
+   - The backend will automatically create the necessary tables on startup
+
+4. **Database Tables Created Automatically:**
+   - `quotes` table for quote requests
+   - `contacts` table for contact form submissions
+   - Proper indexes for performance
+
+2. **Configure Backend Environment:**
+   ```bash
+   # In your backend/.env file
+   DATABASE_URL=postgresql://username:password@host:port/database?sslmode=require
+   NODE_ENV=production
+   PORT=3001
+   ```
+
+3. **Deploy Backend to Railway/DigitalOcean:**
+   - Set the DATABASE_URL environment variable with your Neon connection string
+   - Deploy as usual
+
+### Option 2: Heroku (Recommended for beginners)
 
 1. **Install Heroku CLI:**
    - Download from [heroku.com](https://heroku.com)
@@ -61,6 +98,7 @@ This guide will help you deploy the Advantech Engineering website to Netlify wit
    ```bash
    heroku config:set NODE_ENV=production
    heroku config:set PORT=3001
+   heroku config:set DATABASE_URL=your-neon-connection-string
    # Add your email settings
    heroku config:set SMTP_HOST=smtp.gmail.com
    heroku config:set SMTP_USER=your-email@gmail.com
@@ -100,7 +138,25 @@ This guide will help you deploy the Advantech Engineering website to Netlify wit
    - **Run command:** `npm start`
    - **Environment:** Node.js
 
-## 🔗 Connecting Frontend to Backend
+## 🗄️ Database Upgrade: Neon PostgreSQL
+
+### What's New with Neon Integration:
+✅ **Professional Database** - Replaced JSON file storage with PostgreSQL
+✅ **Scalable Architecture** - Handle thousands of requests efficiently
+✅ **Data Integrity** - ACID compliance and data consistency
+✅ **Better Performance** - Indexed queries and connection pooling
+✅ **Backup & Recovery** - Automatic backups with point-in-time recovery
+✅ **Real-time Features** - Ready for future real-time functionality
+✅ **Production Ready** - Enterprise-grade database infrastructure
+
+### Database Features:
+- **Automatic Table Creation** - Tables created automatically on first startup
+- **Connection Pooling** - Efficient database connection management
+- **Query Optimization** - Proper indexing for fast searches
+- **SSL Security** - Encrypted connections for data protection
+- **Health Monitoring** - Database health checks in API responses
+
+##  Connecting Frontend to Backend
 
 ### Update Frontend API Configuration
 

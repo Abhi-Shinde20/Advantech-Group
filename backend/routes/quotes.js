@@ -1,8 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
-const path = require('path');
-const fs = require('fs').promises;
+const { query } = require('../config/database');
 
 const router = express.Router();
 
@@ -46,41 +45,32 @@ const validateQuote = [
     .withMessage('Requirements must be between 10 and 2000 characters')
 ];
 
-// Helper function to save quote data
+// Helper function to save quote data to PostgreSQL
 async function saveQuoteData(quoteData) {
   try {
-    const dataDir = path.join(__dirname, '..', 'data');
-    const quotesFile = path.join(dataDir, 'quotes.json');
+    const result = await query(
+      `INSERT INTO quotes (name, mobile, email, company, requirements, ip_address, user_agent, status) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8) 
+       RETURNING id, timestamp, status`,
+      [
+        quoteData.name,
+        quoteData.mobile,
+        quoteData.email,
+        quoteData.company,
+        quoteData.requirements,
+        quoteData.ipAddress,
+        quoteData.userAgent,
+        'new'
+      ]
+    );
     
-    // Ensure data directory exists
-    await fs.mkdir(dataDir, { recursive: true });
-    
-    // Read existing quotes
-    let quotes = [];
-    try {
-      const existingData = await fs.readFile(quotesFile, 'utf8');
-      quotes = JSON.parse(existingData);
-    } catch (err) {
-      // File doesn't exist yet, start with empty array
-      quotes = [];
-    }
-    
-    // Add new quote with timestamp and ID
-    const newQuote = {
-      id: Date.now().toString(),
-      ...quoteData,
-      timestamp: new Date().toISOString(),
-      status: 'new'
+    return {
+      id: result.rows[0].id.toString(),
+      timestamp: result.rows[0].timestamp,
+      status: result.rows[0].status
     };
-    
-    quotes.push(newQuote);
-    
-    // Save back to file
-    await fs.writeFile(quotesFile, JSON.stringify(quotes, null, 2));
-    
-    return newQuote;
   } catch (error) {
-    console.error('Error saving quote data:', error);
+    console.error('Error saving quote data to database:', error);
     throw new Error('Failed to save quote data');
   }
 }
@@ -182,34 +172,24 @@ router.post('/', quoteLimiter, validateQuote, async (req, res) => {
 // GET /api/quotes - Get all quotes (for admin purposes)
 router.get('/', async (req, res) => {
   try {
-    const dataDir = path.join(__dirname, '..', 'data');
-    const quotesFile = path.join(dataDir, 'quotes.json');
+    const result = await query(
+      `SELECT id, name, company, timestamp, status 
+       FROM quotes 
+       ORDER BY timestamp DESC 
+       LIMIT 100`
+    );
     
-    try {
-      const quotesData = await fs.readFile(quotesFile, 'utf8');
-      const quotes = JSON.parse(quotesData);
-      
-      // Remove sensitive information for public access
-      const sanitizedQuotes = quotes.map(quote => ({
-        id: quote.id,
-        name: quote.name,
-        company: quote.company,
-        timestamp: quote.timestamp,
-        status: quote.status
-      }));
-      
-      res.json({
-        success: true,
-        count: sanitizedQuotes.length,
-        quotes: sanitizedQuotes
-      });
-    } catch (err) {
-      res.json({
-        success: true,
-        count: 0,
-        quotes: []
-      });
-    }
+    res.json({
+      success: true,
+      count: result.rows.length,
+      quotes: result.rows.map(row => ({
+        id: row.id.toString(),
+        name: row.name,
+        company: row.company,
+        timestamp: row.timestamp,
+        status: row.status
+      }))
+    });
   } catch (error) {
     console.error('Error fetching quotes:', error);
     res.status(500).json({
@@ -222,39 +202,33 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const dataDir = path.join(__dirname, '..', 'data');
-    const quotesFile = path.join(dataDir, 'quotes.json');
+    const result = await query(
+      `SELECT id, name, email, mobile, company, requirements, timestamp, status 
+       FROM quotes 
+       WHERE id = $1`,
+      [id]
+    );
     
-    try {
-      const quotesData = await fs.readFile(quotesFile, 'utf8');
-      const quotes = JSON.parse(quotesData);
-      
-      const quote = quotes.find(q => q.id === id);
-      
-      if (!quote) {
-        return res.status(404).json({
-          error: 'Quote not found'
-        });
-      }
-      
-      res.json({
-        success: true,
-        quote: {
-          id: quote.id,
-          name: quote.name,
-          email: quote.email,
-          mobile: quote.mobile,
-          company: quote.company,
-          requirements: quote.requirements,
-          timestamp: quote.timestamp,
-          status: quote.status
-        }
-      });
-    } catch (err) {
-      res.status(404).json({
+    if (result.rows.length === 0) {
+      return res.status(404).json({
         error: 'Quote not found'
       });
     }
+    
+    const quote = result.rows[0];
+    res.json({
+      success: true,
+      quote: {
+        id: quote.id.toString(),
+        name: quote.name,
+        email: quote.email,
+        mobile: quote.mobile,
+        company: quote.company,
+        requirements: quote.requirements,
+        timestamp: quote.timestamp,
+        status: quote.status
+      }
+    });
   } catch (error) {
     console.error('Error fetching quote:', error);
     res.status(500).json({

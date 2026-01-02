@@ -1,8 +1,7 @@
 const express = require('express');
 const { body, validationResult } = require('express-validator');
 const rateLimit = require('express-rate-limit');
-const path = require('path');
-const fs = require('fs').promises;
+const { query } = require('../config/database');
 
 const router = express.Router();
 
@@ -42,41 +41,31 @@ const validateContact = [
     .withMessage('Message must be between 10 and 1000 characters')
 ];
 
-// Helper function to save contact data
+// Helper function to save contact data to PostgreSQL
 async function saveContactData(contactData) {
   try {
-    const dataDir = path.join(__dirname, '..', 'data');
-    const contactsFile = path.join(dataDir, 'contacts.json');
+    const result = await query(
+      `INSERT INTO contacts (name, email, subject, message, ip_address, user_agent, status) 
+       VALUES ($1, $2, $3, $4, $5, $6, $7) 
+       RETURNING id, timestamp, status`,
+      [
+        contactData.name,
+        contactData.email,
+        contactData.subject,
+        contactData.message,
+        contactData.ipAddress,
+        contactData.userAgent,
+        'new'
+      ]
+    );
     
-    // Ensure data directory exists
-    await fs.mkdir(dataDir, { recursive: true });
-    
-    // Read existing contacts
-    let contacts = [];
-    try {
-      const existingData = await fs.readFile(contactsFile, 'utf8');
-      contacts = JSON.parse(existingData);
-    } catch (err) {
-      // File doesn't exist yet, start with empty array
-      contacts = [];
-    }
-    
-    // Add new contact with timestamp and ID
-    const newContact = {
-      id: Date.now().toString(),
-      ...contactData,
-      timestamp: new Date().toISOString(),
-      status: 'new'
+    return {
+      id: result.rows[0].id.toString(),
+      timestamp: result.rows[0].timestamp,
+      status: result.rows[0].status
     };
-    
-    contacts.push(newContact);
-    
-    // Save back to file
-    await fs.writeFile(contactsFile, JSON.stringify(contacts, null, 2));
-    
-    return newContact;
   } catch (error) {
-    console.error('Error saving contact data:', error);
+    console.error('Error saving contact data to database:', error);
     throw new Error('Failed to save contact data');
   }
 }
@@ -148,34 +137,24 @@ router.post('/', contactLimiter, validateContact, async (req, res) => {
 // GET /api/contact - Get all contacts (for admin purposes)
 router.get('/', async (req, res) => {
   try {
-    const dataDir = path.join(__dirname, '..', 'data');
-    const contactsFile = path.join(dataDir, 'contacts.json');
+    const result = await query(
+      `SELECT id, name, subject, timestamp, status 
+       FROM contacts 
+       ORDER BY timestamp DESC 
+       LIMIT 100`
+    );
     
-    try {
-      const contactsData = await fs.readFile(contactsFile, 'utf8');
-      const contacts = JSON.parse(contactsData);
-      
-      // Remove sensitive information for public access
-      const sanitizedContacts = contacts.map(contact => ({
-        id: contact.id,
-        name: contact.name,
-        subject: contact.subject,
-        timestamp: contact.timestamp,
-        status: contact.status
-      }));
-      
-      res.json({
-        success: true,
-        count: sanitizedContacts.length,
-        contacts: sanitizedContacts
-      });
-    } catch (err) {
-      res.json({
-        success: true,
-        count: 0,
-        contacts: []
-      });
-    }
+    res.json({
+      success: true,
+      count: result.rows.length,
+      contacts: result.rows.map(row => ({
+        id: row.id.toString(),
+        name: row.name,
+        subject: row.subject,
+        timestamp: row.timestamp,
+        status: row.status
+      }))
+    });
   } catch (error) {
     console.error('Error fetching contacts:', error);
     res.status(500).json({
@@ -188,38 +167,32 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
   try {
     const { id } = req.params;
-    const dataDir = path.join(__dirname, '..', 'data');
-    const contactsFile = path.join(dataDir, 'contacts.json');
+    const result = await query(
+      `SELECT id, name, email, subject, message, timestamp, status 
+       FROM contacts 
+       WHERE id = $1`,
+      [id]
+    );
     
-    try {
-      const contactsData = await fs.readFile(contactsFile, 'utf8');
-      const contacts = JSON.parse(contactsData);
-      
-      const contact = contacts.find(c => c.id === id);
-      
-      if (!contact) {
-        return res.status(404).json({
-          error: 'Contact not found'
-        });
-      }
-      
-      res.json({
-        success: true,
-        contact: {
-          id: contact.id,
-          name: contact.name,
-          email: contact.email,
-          subject: contact.subject,
-          message: contact.message,
-          timestamp: contact.timestamp,
-          status: contact.status
-        }
-      });
-    } catch (err) {
-      res.status(404).json({
+    if (result.rows.length === 0) {
+      return res.status(404).json({
         error: 'Contact not found'
       });
     }
+    
+    const contact = result.rows[0];
+    res.json({
+      success: true,
+      contact: {
+        id: contact.id.toString(),
+        name: contact.name,
+        email: contact.email,
+        subject: contact.subject,
+        message: contact.message,
+        timestamp: contact.timestamp,
+        status: contact.status
+      }
+    });
   } catch (error) {
     console.error('Error fetching contact:', error);
     res.status(500).json({

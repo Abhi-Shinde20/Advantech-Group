@@ -7,6 +7,9 @@ const rateLimit = require('express-rate-limit');
 const { body, validationResult } = require('express-validator');
 const path = require('path');
 
+// Import database configuration
+const { initializeDatabase, healthCheck } = require('./config/database');
+
 // Import route modules
 const quoteRoutes = require('./routes/quotes');
 const contactRoutes = require('./routes/contact');
@@ -59,13 +62,25 @@ app.use('/api/quotes', quoteRoutes);
 app.use('/api/contact', contactRoutes);
 
 // Health check endpoint
-app.get('/api/health', (req, res) => {
-  res.json({
-    status: 'OK',
-    timestamp: new Date().toISOString(),
-    uptime: process.uptime(),
-    environment: process.env.NODE_ENV || 'development'
-  });
+app.get('/api/health', async (req, res) => {
+  try {
+    const dbHealth = await healthCheck();
+    res.json({
+      status: 'OK',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || 'development',
+      database: dbHealth
+    });
+  } catch (error) {
+    res.status(503).json({
+      status: 'ERROR',
+      timestamp: new Date().toISOString(),
+      uptime: process.uptime(),
+      environment: process.env.NODE_ENV || 'development',
+      database: { status: 'unhealthy', error: error.message }
+    });
+  }
 });
 
 // Root endpoint
@@ -105,19 +120,43 @@ app.use((err, req, res, next) => {
   });
 });
 
-// Start server
-app.listen(PORT, () => {
-  console.log(`
+// Initialize database and start server
+async function startServer() {
+  try {
+    // Initialize database
+    console.log('🔄 Initializing database...');
+    await initializeDatabase();
+    
+    // Start server
+    app.listen(PORT, () => {
+      console.log(`
 🚀 Advantech Engineering Backend Server
 ========================================
 📍 Port: ${PORT}
 🌍 Environment: ${process.env.NODE_ENV || 'development'}
-📊 Health Check: http://localhost:${PORT}/api/health
+🗄️ Database: PostgreSQL (Neon)
+ Health Check: http://localhost:${PORT}/api/health
 📧 Quote API: http://localhost:${PORT}/api/quotes
 📞 Contact API: http://localhost:${PORT}/api/contact
 ⏰ Started at: ${new Date().toISOString()}
 ========================================
-  `);
+      `);
+    });
+  } catch (error) {
+    console.error('❌ Failed to start server:', error);
+    process.exit(1);
+  }
+}
+
+// Graceful shutdown
+process.on('SIGINT', async () => {
+  console.log('\n⏹️  Shutting down gracefully...');
+  const { closePool } = require('./config/database');
+  await closePool();
+  process.exit(0);
 });
+
+// Start the server
+startServer();
 
 module.exports = app;
