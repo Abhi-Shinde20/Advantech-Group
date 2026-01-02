@@ -236,14 +236,14 @@ function submitQuote(event) {
     
     // Basic validation
     if (!formData.name || !formData.mobile || !formData.email || !formData.company || !formData.requirements) {
-        alert('Please fill in all required fields.');
+        showAlert('Please fill in all required fields.', 'error');
         return;
     }
     
     // Email validation
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(formData.email)) {
-        alert('Please enter a valid email address.');
+        showAlert('Please enter a valid email address.', 'error');
         return;
     }
     
@@ -251,30 +251,103 @@ function submitQuote(event) {
     const mobileRegex = /^[\+]?[1-9][\d]{0,15}$/;
     const cleanMobile = formData.mobile.replace(/[\s\-\(\)]/g, '');
     if (!mobileRegex.test(cleanMobile) || cleanMobile.length < 10) {
-        alert('Please enter a valid mobile number.');
+        showAlert('Please enter a valid mobile number.', 'error');
         return;
     }
     
-    // Show success message
+    // Show loading state
     const submitBtn = document.querySelector('.quote-submit-btn');
     const originalText = submitBtn.innerHTML;
-    submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Quote Requested!';
-    submitBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+    submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Submitting...';
     submitBtn.disabled = true;
     
-    // Log the form data (in a real application, you would send this to a server)
-    console.log('Quote Request Data:', formData);
+    // Submit to backend API
+    submitToBackend('/api/quotes', formData)
+        .then(response => {
+            if (response.success) {
+                submitBtn.innerHTML = '<i class="fas fa-check me-2"></i>Quote Requested!';
+                submitBtn.style.background = 'linear-gradient(135deg, #28a745 0%, #20c997 100%)';
+                
+                setTimeout(() => {
+                    showAlert('Thank you for your quote request! We will contact you within 24 hours.', 'success');
+                    closeQuoteModal();
+                    
+                    // Reset button
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.style.background = '';
+                    submitBtn.disabled = false;
+                }, 1500);
+            } else {
+                throw new Error(response.message || 'Submission failed');
+            }
+        })
+        .catch(error => {
+            console.error('Quote submission error:', error);
+            showAlert('Failed to submit quote request. Please try again or contact us directly.', 'error');
+            
+            // Reset button
+            submitBtn.innerHTML = originalText;
+            submitBtn.style.background = '';
+            submitBtn.disabled = false;
+        });
+}
+
+// Helper function to submit data to backend
+async function submitToBackend(endpoint, data) {
+    const API_BASE_URL = process.env.NODE_ENV === 'production' 
+        ? 'https://your-backend-url.herokuapp.com' // Replace with actual production URL
+        : 'http://localhost:3001';
     
-    // Show success alert
-    setTimeout(() => {
-        alert('Thank you for your quote request! We will contact you within 24 hours.');
-        closeQuoteModal();
+    try {
+        const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data)
+        });
         
-        // Reset button
-        submitBtn.innerHTML = originalText;
-        submitBtn.style.background = '';
-        submitBtn.disabled = false;
-    }, 1500);
+        const result = await response.json();
+        
+        if (!response.ok) {
+            throw new Error(result.message || `HTTP error! status: ${response.status}`);
+        }
+        
+        return result;
+    } catch (error) {
+        console.error('API call failed:', error);
+        throw error;
+    }
+}
+
+// Helper function to show alerts
+function showAlert(message, type = 'info') {
+    // Create alert element
+    const alertDiv = document.createElement('div');
+    alertDiv.className = `alert alert-${type === 'error' ? 'danger' : type} alert-dismissible fade show`;
+    alertDiv.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        z-index: 10000;
+        min-width: 300px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    `;
+    
+    alertDiv.innerHTML = `
+        ${message}
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    `;
+    
+    // Add to page
+    document.body.appendChild(alertDiv);
+    
+    // Auto remove after 5 seconds
+    setTimeout(() => {
+        if (alertDiv.parentNode) {
+            alertDiv.remove();
+        }
+    }, 5000);
 }
 
 // Close modal when clicking outside
